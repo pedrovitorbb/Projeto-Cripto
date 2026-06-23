@@ -1,13 +1,9 @@
 package br.com.faculdade.investimentoscripto.main;
 
-import br.com.faculdade.investimentoscripto.exception.SaldoInsuficienteException;
-import br.com.faculdade.investimentoscripto.exception.UsuarioInvalidoException;
-import br.com.faculdade.investimentoscripto.model.AtivoCripto;
-import br.com.faculdade.investimentoscripto.model.Carteira;
-import br.com.faculdade.investimentoscripto.model.Empresa;
-import br.com.faculdade.investimentoscripto.model.Investidor;
-import br.com.faculdade.investimentoscripto.model.Transacao;
+import java.util.Scanner;
+import java.util.HashMap;
 import br.com.faculdade.investimentoscripto.model.Usuario;
+import br.com.faculdade.investimentoscripto.model.AtivoCripto;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -161,9 +157,32 @@ public class Main {
                 pw.println();
             }
 
-            System.out.println("Arquivo criado/atualizado: " + arquivo.getName());
-        } catch (IOException e) {
-            System.out.println("Erro ao salvar arquivo: " + e.getMessage());
+        System.out.println();
+
+        HashMap<String, Usuario> mapUser = new HashMap<>();
+        mapUser.put(usuario.email, usuario);
+
+        HashMap<String, AtivoCripto> mapCripto = new HashMap<>();
+        AtivoCripto moeda = new AtivoCripto();
+
+        moeda.sigla = "BTC";
+        moeda.nome = "Bitcoin";
+        mapCripto.put(moeda.sigla, moeda);
+
+        String emailBusca = usuario.email;
+        Usuario uFnd = mapUser.get(emailBusca);
+
+        if (uFnd != null) {
+            System.out.println("Resultado mapa usuario: " + uFnd.nome);
         }
+
+        String siglaBusca = "BTC";
+        AtivoCripto cFnd = mapCripto.get(siglaBusca);
+
+        if (cFnd != null) {
+            System.out.println("Resultado mapa ativo: " + cFnd.nome);
+        }
+
+        sc.close();
     }
 }
