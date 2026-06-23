@@ -1,0 +1,27 @@
+Usuarios
+--------
+Id: 1
+Nome: Alice Silva
+Email: alice@email.com
+Senha hash: hash123
+
+Id: 2
+Nome: Bruno Costa
+Email: bruno@email.com
+Senha hash: hash456
+
+Id: 3
+Nome: Carla Lima
+Email: carla@email.com
+Senha hash: hash789
+
+Ativos
+------
+Ticker: BTC
+Nome: Bitcoin
+Cotacao atual: 360000.0
+
+Ticker: ETH
+Nome: Ethereum
+Cotacao atual: 18000.0
+

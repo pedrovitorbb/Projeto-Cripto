@@ -1,4 +1,4 @@
-package br.com.faculdade.investimentocripto.model;
+package br.com.faculdade.investimentoscripto.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,10 +27,7 @@ public class Carteira {
 
     public void registrarTransacao(Transacao t) {
         listaTransacoes.add(t);
-
-        if (t.getValorTotal() != null) {
-            this.saldoTotalGeral = this.saldoTotalGeral.add(t.getValorTotal());
-        }
+        this.saldoTotalGeral = this.saldoTotalGeral.add(BigDecimal.valueOf(t.getValorTotal()));
     }
 
     public AtivoCripto buscarAtivo(String ticker) {

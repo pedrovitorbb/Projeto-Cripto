@@ -1,4 +1,4 @@
-package br.com.faculdade.investimentocripto.model;
+package br.com.faculdade.investimentoscripto.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
