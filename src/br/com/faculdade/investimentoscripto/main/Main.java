@@ -9,8 +9,13 @@ import br.com.faculdade.investimentoscripto.model.Investidor;
 import br.com.faculdade.investimentoscripto.model.Transacao;
 import br.com.faculdade.investimentoscripto.model.Usuario;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class Main {
 
@@ -98,13 +103,67 @@ public class Main {
         // =====================================================
         System.out.println("\n=== Bloco 4: Polimorfismo Dinâmico ===");
 
-        List<Usuario> usuarios = new ArrayList<>();
+        ArrayList<Usuario> usuarios = new ArrayList<>();
         usuarios.add(new Investidor(1L, "Alice Silva", "alice@email.com", "hash123"));
         usuarios.add(new Investidor(2L, "Bruno Costa", "bruno@email.com", "hash456"));
 
         for (Usuario u : usuarios) {
             u.exibirPerfil();
             System.out.println();
+        }
+
+        // =====================================================
+        // Bloco 5 - Arquivos de texto
+        // =====================================================
+        System.out.println("=== Bloco 5: Arquivos de texto ===");
+
+        HashMap<String, AtivoCripto> mapaAtivos = new HashMap<>();
+        mapaAtivos.put(bitcoin.getTicker(), bitcoin);
+
+        salvarDadosEmArquivo(usuarios, mapaAtivos, "dados.txt");
+
+        usuarios.add(new Investidor(3L, "Carla Lima", "carla@email.com", "hash789"));
+        bitcoin.setCotacaoAtual(360000.00);
+
+        AtivoCripto ethereum = new AtivoCripto("ETH", "Ethereum", 18000.00);
+        mapaAtivos.put(ethereum.getTicker(), ethereum);
+
+        salvarDadosEmArquivo(usuarios, mapaAtivos, "dados.txt");
+    }
+
+    private static void salvarDadosEmArquivo(ArrayList<Usuario> usuarios,
+                                             HashMap<String, AtivoCripto> ativos,
+                                             String nomeArquivo) {
+        File arquivo = new File(nomeArquivo);
+
+        try (FileWriter fw = new FileWriter(arquivo);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter pw = new PrintWriter(bw)) {
+
+            pw.println("Usuarios");
+            pw.println("--------");
+
+            for (Usuario usuario : usuarios) {
+                pw.println("Id: " + usuario.getId());
+                pw.println("Nome: " + usuario.getNome());
+                pw.println("Email: " + usuario.getEmail());
+                pw.println("Senha hash: " + usuario.getSenhaHash());
+                pw.println();
+            }
+
+            pw.println("Ativos");
+            pw.println("------");
+
+            for (AtivoCripto ativo : ativos.values()) {
+                pw.println("Ticker: " + ativo.getTicker());
+                pw.println("Nome: " + ativo.getNome());
+                pw.println("Cotacao atual: " + ativo.getCotacaoAtual());
+                pw.println();
+            }
+
+            System.out.println("Arquivo criado/atualizado: " + arquivo.getName());
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar arquivo: " + e.getMessage());
         }
     }
 }
