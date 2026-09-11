@@ -6,6 +6,7 @@ public abstract class Usuario {
     private String nome;
     private String email;
     private String senhaHash;
+    private String cpf;
 
     public Usuario() {
     }
@@ -15,6 +16,12 @@ public abstract class Usuario {
         this.nome = nome;
         this.email = email;
         this.senhaHash = senhaHash;
+    }
+
+    /** Construtor completo, incluindo o CPF (coluna cpf_usuario de T_SIP_USUARIO). */
+    public Usuario(Long id, String nome, String email, String senhaHash, String cpf) {
+        this(id, nome, email, senhaHash);
+        this.cpf = cpf;
     }
 
     public abstract void exibirPerfil();
@@ -49,5 +56,15 @@ public abstract class Usuario {
 
     public void setSenhaHash(String senhaHash) {
         this.senhaHash = senhaHash;
+    }
+
+    /** @return o CPF com 11 digitos, sem pontuacao */
+    public String getCpf() {
+        return cpf;
+    }
+
+    /** @param cpf CPF com 11 digitos, sem pontuacao */
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 }
