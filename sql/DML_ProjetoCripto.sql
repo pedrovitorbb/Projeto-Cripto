@@ -8,28 +8,28 @@
 
 -- =====================================================================
 -- 1. INSERT - USUARIOS
--- T_SIP_USUARIO possui IDENTITY, mas neste script os IDs sao informados
--- explicitamente para facilitar a referencia pelas chaves estrangeiras.
+-- Os IDs sao gerados automaticamente e seguem a ordem dos INSERTs.
+-- O DDL deve ser executado antes deste script.
 -- =====================================================================
 
-INSERT INTO T_SIP_USUARIO (id, nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
-VALUES (1, 'Michael Molinari', 'michael@projetocripto.com',
+INSERT INTO T_SIP_USUARIO (nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
+VALUES ('Michael Molinari', 'michael@projetocripto.com',
         'hash_michael_123456789', '11111111101');
 
-INSERT INTO T_SIP_USUARIO (id, nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
-VALUES (2, 'Ana Beatriz Souza', 'ana@projetocripto.com',
+INSERT INTO T_SIP_USUARIO (nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
+VALUES ('Ana Beatriz Souza', 'ana@projetocripto.com',
         'hash_ana_123456789', '22222222202');
 
-INSERT INTO T_SIP_USUARIO (id, nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
-VALUES (3, 'Carlos Eduardo Lima', 'carlos@projetocripto.com',
+INSERT INTO T_SIP_USUARIO (nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
+VALUES ('Carlos Eduardo Lima', 'carlos@projetocripto.com',
         'hash_carlos_123456789', '33333333303');
 
-INSERT INTO T_SIP_USUARIO (id, nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
-VALUES (4, 'Julia Martins', 'julia@projetocripto.com',
+INSERT INTO T_SIP_USUARIO (nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
+VALUES ('Julia Martins', 'julia@projetocripto.com',
         'hash_julia_123456789', '44444444404');
 
-INSERT INTO T_SIP_USUARIO (id, nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
-VALUES (5, 'Rafael Oliveira', 'rafael@projetocripto.com',
+INSERT INTO T_SIP_USUARIO (nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
+VALUES ('Rafael Oliveira', 'rafael@projetocripto.com',
         'hash_rafael_123456789', '55555555505');
 
 
@@ -57,14 +57,14 @@ VALUES (4);
 -- CNPJ armazenado somente com os 14 digitos, conforme o DDL.
 -- =====================================================================
 
-INSERT INTO T_SIP_EMPRESA (id_empresa, nm_razao_social, nr_cnpj, id_usuario)
-VALUES (1, 'CryptoTech Investimentos Ltda', '12345678000190', 1);
+INSERT INTO T_SIP_EMPRESA (nm_razao_social, nr_cnpj, id_usuario)
+VALUES ('CryptoTech Investimentos Ltda', '12345678000190', 1);
 
-INSERT INTO T_SIP_EMPRESA (id_empresa, nm_razao_social, nr_cnpj, id_usuario)
-VALUES (2, 'BlockData Solucoes Financeiras Ltda', '23456789000181', 2);
+INSERT INTO T_SIP_EMPRESA (nm_razao_social, nr_cnpj, id_usuario)
+VALUES ('BlockData Solucoes Financeiras Ltda', '23456789000181', 2);
 
-INSERT INTO T_SIP_EMPRESA (id_empresa, nm_razao_social, nr_cnpj, id_usuario)
-VALUES (3, 'Digital Assets Brasil S.A.', '34567890000172', 3);
+INSERT INTO T_SIP_EMPRESA (nm_razao_social, nr_cnpj, id_usuario)
+VALUES ('Digital Assets Brasil S.A.', '34567890000172', 3);
 
 
 -- =====================================================================
@@ -73,24 +73,24 @@ VALUES (3, 'Digital Assets Brasil S.A.', '34567890000172', 3);
 -- =====================================================================
 
 INSERT INTO T_SIP_CARTEIRA
-    (id_carteira, vl_saldo_total_geral, id_investidor, id_empresa)
+    (vl_saldo_total_geral, id_investidor, id_empresa)
 VALUES
-    (1, 125000.00, 1, 1);
+    (125000.00, 1, 1);
 
 INSERT INTO T_SIP_CARTEIRA
-    (id_carteira, vl_saldo_total_geral, id_investidor, id_empresa)
+    (vl_saldo_total_geral, id_investidor, id_empresa)
 VALUES
-    (2, 84500.00, 2, 2);
+    (84500.00, 2, 2);
 
 INSERT INTO T_SIP_CARTEIRA
-    (id_carteira, vl_saldo_total_geral, id_investidor, id_empresa)
+    (vl_saldo_total_geral, id_investidor, id_empresa)
 VALUES
-    (3, 212750.00, 3, 1);
+    (212750.00, 3, 1);
 
 INSERT INTO T_SIP_CARTEIRA
-    (id_carteira, vl_saldo_total_geral, id_investidor, id_empresa)
+    (vl_saldo_total_geral, id_investidor, id_empresa)
 VALUES
-    (4, 65300.00, 4, 3);
+    (65300.00, 4, 3);
 
 
 -- =====================================================================
@@ -151,82 +151,82 @@ VALUES
 -- =====================================================================
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (1, TO_DATE('10/01/2026 10:15:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('10/01/2026 10:15:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 0.50000000, 50000.00,
      'a1111111111111111111111111111111111111111111111111111111111111', 1);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (2, TO_DATE('15/01/2026 14:30:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('15/01/2026 14:30:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 10.00000000, 3100.00,
      'b2222222222222222222222222222222222222222222222222222222222222', 1);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (3, TO_DATE('03/02/2026 09:20:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('03/02/2026 09:20:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 100.00000000, 200.00,
      'c3333333333333333333333333333333333333333333333333333333333333', 1);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (4, TO_DATE('11/02/2026 11:10:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('11/02/2026 11:10:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 0.85000000, 50000.00,
      'd4444444444444444444444444444444444444444444444444444444444444', 2);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (5, TO_DATE('19/02/2026 16:45:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('19/02/2026 16:45:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 10.00000000, 3200.00,
      'e5555555555555555555555555555555555555555555555555555555555555', 2);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (6, TO_DATE('05/03/2026 13:05:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('05/03/2026 13:05:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 2.10000000, 60000.00,
      'f6666666666666666666666666666666666666666666666666666666666666', 3);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (7, TO_DATE('12/03/2026 15:40:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('12/03/2026 15:40:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 250.00000000, 190.00,
      '0711111111111111111111111111111111111111111111111111111111111111', 3);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (8, TO_DATE('25/03/2026 10:25:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('25/03/2026 10:25:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 15.00000000, 3000.00,
      '0822222222222222222222222222222222222222222222222222222222222222', 4);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (9, TO_DATE('02/04/2026 12:50:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('02/04/2026 12:50:00', 'DD/MM/YYYY HH24:MI:SS'),
      'COMPRA', 8000.00000000, 2.00,
      '0933333333333333333333333333333333333333333333333333333333333333', 4);
 
 INSERT INTO T_SIP_TRANSACAO
-    (id_transacao, dt_data_hora, tp_transacao, qt_transacao,
+    (dt_data_hora, tp_transacao, qt_transacao,
      vl_unitario, ds_hash_blockchain, id_carteira)
 VALUES
-    (10, TO_DATE('15/04/2026 17:10:00', 'DD/MM/YYYY HH24:MI:SS'),
+    (TO_DATE('15/04/2026 17:10:00', 'DD/MM/YYYY HH24:MI:SS'),
      'VENDA', 0.10000000, 65000.00,
      '1044444444444444444444444444444444444444444444444444444444444444', 1);
 
@@ -248,15 +248,15 @@ WHERE id_carteira = 1;
 
 -- =====================================================================
 -- 8. DELETE - exemplo seguro para demonstrar a operacao
--- O usuario 6 e temporario e nao possui registros filhos.
+-- O usuario temporario nao possui registros filhos.
 -- =====================================================================
 
-INSERT INTO T_SIP_USUARIO (id, nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
-VALUES (6, 'Usuario Temporario', 'temporario@projetocripto.com',
+INSERT INTO T_SIP_USUARIO (nm_usuario, ds_email, ds_senha_hash, cpf_usuario)
+VALUES ('Usuario Temporario', 'temporario@projetocripto.com',
         'hash_temporario', '66666666606');
 
 DELETE FROM T_SIP_USUARIO
-WHERE id = 6;
+WHERE ds_email = 'temporario@projetocripto.com';
 
 
 -- =====================================================================
