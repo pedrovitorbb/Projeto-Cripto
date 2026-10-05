@@ -1,0 +1,10 @@
+# Modelo de configuracao do Oracle da FIAP.
+# Copie este arquivo para "db.properties" (na raiz do projeto) e preencha com
+# o SEU RM e a SUA senha. O db.properties esta no .gitignore e nunca deve ser
+# commitado. Cada integrante usa o proprio schema.
+#
+# Variaveis de ambiente FIAP_DB_URL, FIAP_DB_USER e FIAP_DB_PASSWORD, se
+# definidas, tem prioridade sobre este arquivo.
+db.url=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+db.user=rmXXXXXX
+db.password=SUA_SENHA_AQUI
