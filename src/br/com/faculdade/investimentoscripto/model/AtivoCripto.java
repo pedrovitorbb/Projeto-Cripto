@@ -23,12 +23,12 @@ public class AtivoCripto {
 
     /** 1) Lucro/Prejuízo de UMA transação específica usando a cotação atual do ativo. */
     public double calcularLucroPrejuizo(Transacao t) {
-        return (this.cotacaoAtual - t.getPrecoMedioCompra()) * t.getQuantidade();
+        return (this.cotacaoAtual - t.getPrecoMedioCompra()) * t.getQuantidade().doubleValue();
     }
 
     /** 2) Lucro/Prejuízo informando manualmente o preço de venda. */
     public double calcularLucroPrejuizo(Transacao t, double precoVenda) {
-        return (precoVenda - t.getPrecoMedioCompra()) * t.getQuantidade();
+        return (precoVenda - t.getPrecoMedioCompra()) * t.getQuantidade().doubleValue();
     }
 
     /** 3) Lucro/Prejuízo de uma quantidade arbitrária dado um preço médio de compra. */
@@ -54,7 +54,7 @@ public class AtivoCripto {
     }
 
     public double getQuantidadeTotal() {
-        return transacoes.stream().mapToDouble(Transacao::getQuantidade).sum();
+        return transacoes.stream().mapToDouble(t -> t.getQuantidade().doubleValue()).sum();
     }
 
     // Getters & Setters
