@@ -38,7 +38,7 @@ public class Carteira {
 
     public void registrarTransacao(Transacao t) {
         listaTransacoes.add(t);
-        this.saldoTotalGeral = this.saldoTotalGeral.add(BigDecimal.valueOf(t.getValorTotal()));
+        this.saldoTotalGeral = this.saldoTotalGeral.add(t.getValorTotal());
     }
 
     public AtivoCripto buscarAtivo(String ticker) {
