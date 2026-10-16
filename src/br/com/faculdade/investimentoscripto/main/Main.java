@@ -1,154 +1,192 @@
 package br.com.faculdade.investimentoscripto.main;
 
 import br.com.faculdade.investimentoscripto.conexao.ConnectionFactory;
+import br.com.faculdade.investimentoscripto.dao.CarteiraDAO;
+import br.com.faculdade.investimentoscripto.dao.EmpresaDAO;
 import br.com.faculdade.investimentoscripto.dao.InvestidorDAO;
 import br.com.faculdade.investimentoscripto.exception.PersistenciaException;
+import br.com.faculdade.investimentoscripto.model.Carteira;
+import br.com.faculdade.investimentoscripto.model.Empresa;
 import br.com.faculdade.investimentoscripto.model.Investidor;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
 
     private static final InvestidorDAO investidorDAO = new InvestidorDAO();
-    private static Investidor investidorTeste;
+    private static final EmpresaDAO empresaDAO = new EmpresaDAO();
+    private static final CarteiraDAO carteiraDAO = new CarteiraDAO();
+
+    private static Investidor investidor;
+    private static Empresa empresa1;
+    private static Empresa empresa2;
+    private static Carteira carteira;
 
     public static void main(String[] args) {
-        if (!testarConexao()) {
-            System.out.println("\nOs testes do CRUD nao foram executados porque nao houve conexao com o banco.");
-            return;
-        }
-
+        boolean sucesso = false;
         try {
-            testarInsercao();
-            testarConsulta();
-            testarAtualizacao();
-            confirmarAtualizacao();
-            testarExclusao();
-            confirmarExclusao();
-
-            System.out.println("\nTodos os testes do CRUD foram concluidos com sucesso.");
+            preparar();
+            inserir();
+            consultar();
+            atualizarETestarRestricao();
+            excluir();
+            System.out.println("\nOs cinco blocos de teste passaram.");
+            sucesso = true;
         } catch (Exception e) {
-            System.out.println("\nOs testes foram interrompidos.");
-            System.out.println("Erro: " + e.getMessage());
+            System.out.println("\nTeste interrompido: " + e.getMessage());
+        } finally {
+            limparDadosTemporarios();
+        }
+        if (!sucesso) {
+            System.exit(1);
         }
     }
 
-    private static boolean testarConexao() {
-        mostrarTitulo("TESTE DE CONEXAO");
+    private static void preparar() throws SQLException, PersistenciaException {
+        titulo("1. CONEXAO E USUARIO DE TESTE");
+        exigir(ConnectionFactory.testarConexao(), "O Oracle nao respondeu ao teste de conexao.");
+
+        String sufixo = String.valueOf(System.currentTimeMillis());
+        investidor = new Investidor(null, "Investidor Fase6", "fase6." + sufixo + "@teste.com",
+                "hash_teste", sufixo.substring(sufixo.length() - 11));
+        investidorDAO.inserir(investidor);
+        exigir(investidor.getId() != null, "O usuario nao recebeu um id.");
+        System.out.println("Investidor criado: " + investidor.getId());
+    }
+
+    private static void inserir() throws PersistenciaException {
+        titulo("2. INSERT DE EMPRESAS E CARTEIRA");
+        String sufixo = String.valueOf(System.currentTimeMillis());
+        empresa1 = new Empresa(null, "Empresa Fase6 Alfa", sufixo + "1", investidor.getId());
+        empresa2 = new Empresa(null, "Empresa Fase6 Beta", sufixo + "2", investidor.getId());
+        empresaDAO.inserir(empresa1);
+        empresaDAO.inserir(empresa2);
+        exigir(empresa1.getId() != null && empresa2.getId() != null,
+                "O Oracle nao devolveu os ids das empresas.");
+
+        carteira = new Carteira(null, new BigDecimal("100.00"), investidor, empresa1);
+        carteiraDAO.inserir(carteira);
+        exigir(carteira.getId() != null, "A carteira nao recebeu um id.");
+        System.out.println("Empresas: " + empresa1.getId() + ", " + empresa2.getId()
+                + "; carteira: " + carteira.getId());
+    }
+
+    private static void consultar() throws PersistenciaException {
+        titulo("3. SELECT POR ID, NOME E LISTAS");
+        Empresa lida = empresaDAO.buscarPorId(empresa1.getId());
+        exigir(lida != null && lida.getCnpj().equals(empresa1.getCnpj())
+                        && lida.getIdUsuario().equals(investidor.getId()),
+                "Os dados da empresa lidos do Oracle estao incorretos.");
+        exigir(empresaDAO.buscarPorId(Long.MAX_VALUE) == null,
+                "A busca por id inexistente deveria retornar null.");
+
+        List<Empresa> encontradas = empresaDAO.buscarPorNome("Empresa Fase6");
+        exigir(contem(encontradas, empresa1.getId()) && contem(encontradas, empresa2.getId()),
+                "A busca por nome nao retornou as duas empresas.");
+        List<Empresa> todas = empresaDAO.listarTodas();
+        exigir(contem(todas, empresa1.getId()) && contem(todas, empresa2.getId()),
+                "A listagem nao retornou as empresas inseridas.");
+        exigir(carteiraDAO.buscarPorId(carteira.getId()) != null,
+                "A carteira vinculada nao foi encontrada.");
+        System.out.println("Empresas localizadas por nome: " + encontradas.size());
+    }
+
+    private static void atualizarETestarRestricao() throws PersistenciaException {
+        titulo("4. UPDATE E CHAVE ESTRANGEIRA");
+        empresa1.setRazaoSocial("Empresa Fase6 Alfa Atualizada");
+        exigir(empresaDAO.atualizar(empresa1), "Nenhuma empresa foi atualizada.");
+        exigir(empresa1.getRazaoSocial().equals(
+                empresaDAO.buscarPorId(empresa1.getId()).getRazaoSocial()),
+                "O UPDATE da empresa nao foi confirmado por SELECT.");
+
+        investidor.setNome("Investidor Fase6 Atualizado");
+        exigir(investidorDAO.alterar(investidor), "Nenhum investidor foi atualizado.");
+        exigir(investidor.getNome().equals(investidorDAO.buscarPorId(investidor.getId()).getNome()),
+                "O UPDATE do investidor nao foi confirmado.");
 
         try {
-            if (ConnectionFactory.testarConexao()) {
-                System.out.println("Conexao realizada com sucesso.");
+            empresaDAO.excluir(empresa1.getId());
+            throw new IllegalStateException("O Oracle permitiu excluir empresa com carteira.");
+        } catch (PersistenciaException e) {
+            if (!(e.getCause() instanceof SQLException sql) || sql.getErrorCode() != 2292) {
+                throw e;
+            }
+            System.out.println("Restricao de carteira confirmada (ORA-02292).");
+        }
+    }
+
+    private static void excluir() throws PersistenciaException {
+        titulo("5. DELETE E CONFIRMACAO");
+        exigir(carteiraDAO.deletar(carteira.getId()), "A carteira nao foi excluida.");
+        exigir(carteiraDAO.buscarPorId(carteira.getId()) == null,
+                "A carteira ainda existe no Oracle.");
+        carteira = null;
+
+        exigir(empresaDAO.excluir(empresa1.getId()), "A primeira empresa nao foi excluida.");
+        exigir(empresaDAO.buscarPorId(empresa1.getId()) == null,
+                "A primeira empresa ainda existe no Oracle.");
+        empresa1 = null;
+        exigir(empresaDAO.excluir(empresa2.getId()), "A segunda empresa nao foi excluida.");
+        exigir(empresaDAO.buscarPorId(empresa2.getId()) == null,
+                "A segunda empresa ainda existe no Oracle.");
+        empresa2 = null;
+
+        exigir(investidorDAO.excluir(investidor.getId()), "O investidor nao foi excluido.");
+        exigir(investidorDAO.buscarPorId(investidor.getId()) == null,
+                "O investidor ainda existe no Oracle.");
+        investidor = null;
+        System.out.println("Exclusoes confirmadas por SELECT.");
+    }
+
+    private static boolean contem(List<Empresa> empresas, Long id) {
+        for (Empresa empresa : empresas) {
+            if (empresa.getId().equals(id)) {
                 return true;
             }
-
-            System.out.println("O banco nao respondeu ao teste de conexao.");
-        } catch (SQLException | IllegalStateException e) {
-            System.out.println("Nao foi possivel conectar ao Oracle.");
-            System.out.println("Erro: " + e.getMessage());
         }
-
         return false;
     }
 
-    private static void testarInsercao() throws PersistenciaException {
-        mostrarTitulo("TESTE DE INSERT");
-
-        String numeroTeste = String.valueOf(System.currentTimeMillis());
-        String cpfTeste = numeroTeste.substring(numeroTeste.length() - 11);
-
-        investidorTeste = new Investidor(
-                null,
-                "Investidor Teste",
-                "investidor." + numeroTeste + "@teste.com",
-                "hash_teste_123",
-                cpfTeste);
-
-        investidorDAO.inserir(investidorTeste);
-
-        if (investidorTeste.getId() == null) {
-            throw new IllegalStateException("O banco nao devolveu o ID do investidor.");
+    private static void limparDadosTemporarios() {
+        try {
+            if (carteira != null && carteira.getId() != null) {
+                carteiraDAO.deletar(carteira.getId());
+            }
+        } catch (PersistenciaException e) {
+            System.out.println("Falha ao limpar carteira: " + e.getMessage());
         }
-
-        System.out.println("Investidor inserido com sucesso.");
-        System.out.println("ID gerado: " + investidorTeste.getId());
-    }
-
-    private static void testarConsulta() throws PersistenciaException {
-        mostrarTitulo("TESTE DE SELECT");
-
-        List<Investidor> investidores = investidorDAO.listar();
-        System.out.println("Quantidade de investidores cadastrados: " + investidores.size());
-
-        Investidor investidorEncontrado = investidorDAO.buscarPorId(investidorTeste.getId());
-        if (investidorEncontrado == null) {
-            throw new IllegalStateException("O investidor inserido nao foi encontrado.");
+        try {
+            if (empresa1 != null && empresa1.getId() != null) {
+                empresaDAO.excluir(empresa1.getId());
+            }
+        } catch (PersistenciaException e) {
+            System.out.println("Falha ao limpar primeira empresa: " + e.getMessage());
         }
-
-        mostrarInvestidor(investidorEncontrado);
-    }
-
-    private static void testarAtualizacao() throws PersistenciaException {
-        mostrarTitulo("TESTE DE UPDATE");
-
-        investidorTeste.setNome("Investidor Teste Alterado");
-        investidorTeste.setEmail("alterado." + System.currentTimeMillis() + "@teste.com");
-
-        boolean alterou = investidorDAO.alterar(investidorTeste);
-        if (!alterou) {
-            throw new IllegalStateException("Nenhum investidor foi atualizado.");
+        try {
+            if (empresa2 != null && empresa2.getId() != null) {
+                empresaDAO.excluir(empresa2.getId());
+            }
+        } catch (PersistenciaException e) {
+            System.out.println("Falha ao limpar segunda empresa: " + e.getMessage());
         }
-
-        System.out.println("Investidor atualizado com sucesso.");
-    }
-
-    private static void confirmarAtualizacao() throws PersistenciaException {
-        mostrarTitulo("CONFIRMACAO DO UPDATE");
-
-        Investidor investidorAtualizado = investidorDAO.buscarPorId(investidorTeste.getId());
-        if (investidorAtualizado == null
-                || !investidorTeste.getNome().equals(investidorAtualizado.getNome())
-                || !investidorTeste.getEmail().equals(investidorAtualizado.getEmail())) {
-            throw new IllegalStateException("A alteracao nao foi confirmada pela consulta.");
+        try {
+            if (investidor != null && investidor.getId() != null) {
+                investidorDAO.excluir(investidor.getId());
+            }
+        } catch (PersistenciaException e) {
+            System.out.println("Falha ao limpar investidor: " + e.getMessage());
         }
-
-        mostrarInvestidor(investidorAtualizado);
-        System.out.println("Alteracao confirmada.");
     }
 
-    private static void testarExclusao() throws PersistenciaException {
-        mostrarTitulo("TESTE DE DELETE");
-
-        boolean excluiu = investidorDAO.excluir(investidorTeste.getId());
-        if (!excluiu) {
-            throw new IllegalStateException("Nenhum investidor foi excluido.");
+    private static void exigir(boolean condicao, String mensagem) {
+        if (!condicao) {
+            throw new IllegalStateException(mensagem);
         }
-
-        System.out.println("Investidor excluido com sucesso.");
     }
 
-    private static void confirmarExclusao() throws PersistenciaException {
-        mostrarTitulo("CONFIRMACAO DO DELETE");
-
-        Investidor investidorEncontrado = investidorDAO.buscarPorId(investidorTeste.getId());
-        if (investidorEncontrado != null) {
-            throw new IllegalStateException("O investidor ainda existe no banco.");
-        }
-
-        System.out.println("Registro nao encontrado. Exclusao confirmada.");
-    }
-
-    private static void mostrarInvestidor(Investidor investidor) {
-        System.out.println("ID: " + investidor.getId());
-        System.out.println("Nome: " + investidor.getNome());
-        System.out.println("Email: " + investidor.getEmail());
-        System.out.println("CPF: " + investidor.getCpf());
-    }
-
-    private static void mostrarTitulo(String titulo) {
-        System.out.println("\n===============================");
-        System.out.println(titulo);
-        System.out.println("===============================");
+    private static void titulo(String nome) {
+        System.out.println("\n=== " + nome + " ===");
     }
 }
