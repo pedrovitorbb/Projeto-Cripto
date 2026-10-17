@@ -8,6 +8,7 @@ public class Empresa {
     private Long id;
     private String razaoSocial;
     private String cnpj;
+    private Long idUsuario;
     private List<Carteira> carteiras;
 
 
@@ -16,6 +17,11 @@ public class Empresa {
         this.razaoSocial = razaoSocial;
         this.cnpj = cnpj;
         this.carteiras = new ArrayList<>();
+    }
+
+    public Empresa(Long id, String razaoSocial, String cnpj, Long idUsuario) {
+        this(id, razaoSocial, cnpj);
+        this.idUsuario = idUsuario;
     }
 
 
@@ -60,6 +66,14 @@ public class Empresa {
 
     public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
+    }
+
+    public Long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public List<Carteira> getCarteiras() {
