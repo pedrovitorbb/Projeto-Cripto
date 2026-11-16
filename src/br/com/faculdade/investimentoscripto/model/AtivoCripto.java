@@ -1,9 +1,22 @@
 package br.com.faculdade.investimentoscripto.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Ativo cripto. Alem dos campos de dominio, guarda os dados da posicao do ativo
+ * em uma carteira (T_SIP_ATIVO_CRIPTO, chave composta idCarteira + ticker).
+ *
+ * <p>Os campos {@code nome}, {@code cotacaoAtual} e {@code transacoes} existem apenas
+ * no dominio: nao ha coluna para eles na tabela e o AtivoCriptoDAO nao os persiste.</p>
+ */
 public class AtivoCripto {
+
+    private Long idCarteira;
+    private BigDecimal quantidade;
+    private BigDecimal precoMedioCompra;
+    private BigDecimal valorTotalInvestido;
 
     private String ticker;            // Ex.: BTC, ETH, SOL
     private String nome;              // Ex.: Bitcoin
@@ -14,6 +27,20 @@ public class AtivoCripto {
         this.ticker = ticker;
         this.nome = nome;
         this.cotacaoAtual = cotacaoAtual;
+        this.transacoes = new ArrayList<>();
+    }
+
+    /**
+     * Construtor de persistencia: usado pelo AtivoCriptoDAO ao ler o banco ou ao
+     * montar um ativo para gravar. Nome e cotacao ficam vazios (nao ha coluna).
+     */
+    public AtivoCripto(Long idCarteira, String ticker, BigDecimal quantidade,
+                       BigDecimal precoMedioCompra, BigDecimal valorTotalInvestido) {
+        this.idCarteira = idCarteira;
+        this.ticker = ticker;
+        this.quantidade = quantidade;
+        this.precoMedioCompra = precoMedioCompra;
+        this.valorTotalInvestido = valorTotalInvestido;
         this.transacoes = new ArrayList<>();
     }
 
@@ -58,6 +85,18 @@ public class AtivoCripto {
     }
 
     // Getters & Setters
+    public Long getIdCarteira() { return idCarteira; }
+    public void setIdCarteira(Long idCarteira) { this.idCarteira = idCarteira; }
+
+    public BigDecimal getQuantidade() { return quantidade; }
+    public void setQuantidade(BigDecimal quantidade) { this.quantidade = quantidade; }
+
+    public BigDecimal getPrecoMedioCompra() { return precoMedioCompra; }
+    public void setPrecoMedioCompra(BigDecimal precoMedioCompra) { this.precoMedioCompra = precoMedioCompra; }
+
+    public BigDecimal getValorTotalInvestido() { return valorTotalInvestido; }
+    public void setValorTotalInvestido(BigDecimal valorTotalInvestido) { this.valorTotalInvestido = valorTotalInvestido; }
+
     public String getTicker() { return ticker; }
     public void setTicker(String ticker) { this.ticker = ticker; }
 
