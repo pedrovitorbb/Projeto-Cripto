@@ -1,6 +1,7 @@
 package br.com.faculdade.investimentoscripto.main;
 
 import br.com.faculdade.investimentoscripto.view.Console;
+import br.com.faculdade.investimentoscripto.view.InvestidorMenu;
 
 public class Main {
 
@@ -12,7 +13,7 @@ public class Main {
             opcao = Console.lerInt("Escolha uma opção: ");
 
             switch (opcao) {
-                case 1 -> System.out.println("\nEste módulo ainda não está disponível.");
+                case 1 -> InvestidorMenu.executar();
                 case 2, 3, 4, 5 -> System.out.println("\nEste módulo ainda não está disponível.");
                 case 0 -> System.out.println("\nSistema encerrado.");
                 default -> System.out.println("\nOpção inválida.");
