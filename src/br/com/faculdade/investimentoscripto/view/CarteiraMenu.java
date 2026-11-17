@@ -50,7 +50,7 @@ public class CarteiraMenu {
         int opcao;
         do {
             exibirOpcoes();
-            opcao = Console.lerInt("Opção: ", 0, 8);
+            opcao = Console.lerInt("Escolha uma opção: ");
 
             try {
                 switch (opcao) {
@@ -62,7 +62,8 @@ public class CarteiraMenu {
                     case 6 -> listarPorInvestidor();
                     case 7 -> listarPorEmpresa();
                     case 8 -> exibirResumo();
-                    default -> { }
+                    case 0 -> System.out.println("\nVoltando ao menu principal.");
+                    default -> System.out.println("\nOpção inválida.");
                 }
             } catch (PersistenciaException | IllegalStateException e) {
                 System.out.println("Erro: " + e.getMessage());
@@ -71,7 +72,9 @@ public class CarteiraMenu {
     }
 
     private static void exibirOpcoes() {
-        Console.titulo("MÓDULO CARTEIRA");
+        System.out.println("\n================================");
+        System.out.println("      GERENCIAR CARTEIRAS");
+        System.out.println("================================");
         System.out.println("1 - Incluir carteira");
         System.out.println("2 - Alterar carteira");
         System.out.println("3 - Excluir carteira");
@@ -81,6 +84,7 @@ public class CarteiraMenu {
         System.out.println("7 - Listar carteiras de uma empresa");
         System.out.println("8 - Resumo (total de carteiras e saldo)");
         System.out.println("0 - Voltar");
+        System.out.println();
     }
 
     // =====================================================================
@@ -88,7 +92,7 @@ public class CarteiraMenu {
     // =====================================================================
 
     private static void incluir() throws PersistenciaException {
-        Console.titulo("INCLUIR CARTEIRA");
+        titulo("INCLUIR CARTEIRA");
 
         List<Investidor> investidores = investidorDAO.listar();
         if (investidores.isEmpty()) {
@@ -131,7 +135,7 @@ public class CarteiraMenu {
     /** Pede o id ate ser de um investidor da lista; 0 cancela e devolve null. */
     private static Investidor escolherInvestidor(List<Investidor> investidores) {
         while (true) {
-            long id = Console.lerLong("ID do investidor (0 para cancelar): ");
+            long id = lerId("ID do investidor (0 para cancelar): ");
             if (id == 0) {
                 return null;
             }
@@ -147,7 +151,7 @@ public class CarteiraMenu {
     /** Pede o id ate ser de uma empresa da lista; 0 cancela e devolve null. */
     private static Empresa escolherEmpresa(List<Empresa> empresas) {
         while (true) {
-            long id = Console.lerLong("ID da empresa (0 para cancelar): ");
+            long id = lerId("ID da empresa (0 para cancelar): ");
             if (id == 0) {
                 return null;
             }
@@ -165,7 +169,7 @@ public class CarteiraMenu {
     // =====================================================================
 
     private static void alterar() throws PersistenciaException {
-        Console.titulo("ALTERAR CARTEIRA");
+        titulo("ALTERAR CARTEIRA");
 
         Carteira carteira = buscarCarteira("ID da carteira (0 para cancelar): ");
         if (carteira == null) {
@@ -196,7 +200,7 @@ public class CarteiraMenu {
 
         carteira.setSaldoTotalGeral(lerSaldoOpcional("Saldo", carteira.getSaldoTotalGeral()));
 
-        if (!Console.confirmar("Salvar as alterações?")) {
+        if (!Console.confirmar("Salvar as alterações? (S/N): ")) {
             System.out.println("Alteração cancelada.");
             return;
         }
@@ -210,7 +214,7 @@ public class CarteiraMenu {
     /** Le um id; ENTER mantem o valor atual. Repete ate a entrada ser valida. */
     private static Long lerIdOpcional(String nome, Long atual) {
         while (true) {
-            String texto = Console.lerTextoOpcional(nome + " [" + atual + "]: ");
+            String texto = Console.lerTexto(nome + " [" + atual + "]: ");
             if (texto.isEmpty()) {
                 return atual;
             }
@@ -229,7 +233,7 @@ public class CarteiraMenu {
     /** Le o saldo; ENTER mantem o valor atual. Repete ate a entrada ser valida. */
     private static BigDecimal lerSaldoOpcional(String nome, BigDecimal atual) {
         while (true) {
-            String texto = Console.lerTextoOpcional(nome + " [" + formatarValor(atual) + "]: ");
+            String texto = Console.lerTexto(nome + " [" + formatarValor(atual) + "]: ");
             if (texto.isEmpty()) {
                 return atual;
             }
@@ -251,7 +255,7 @@ public class CarteiraMenu {
     // =====================================================================
 
     private static void excluir() throws PersistenciaException {
-        Console.titulo("EXCLUIR CARTEIRA");
+        titulo("EXCLUIR CARTEIRA");
 
         Carteira carteira = buscarCarteira("ID da carteira (0 para cancelar): ");
         if (carteira == null) {
@@ -259,7 +263,7 @@ public class CarteiraMenu {
         }
         exibirResumoDaCarteira(carteira);
 
-        if (!Console.confirmar("Confirma a exclusão desta carteira?")) {
+        if (!Console.confirmar("Deseja realmente excluir esta carteira? (S/N): ")) {
             System.out.println("Exclusão cancelada.");
             return;
         }
@@ -275,13 +279,13 @@ public class CarteiraMenu {
     // =====================================================================
 
     private static void exibirTodas() throws PersistenciaException {
-        Console.titulo("TODAS AS CARTEIRAS");
+        titulo("TODAS AS CARTEIRAS");
         List<Carteira> carteiras = carteiraDAO.listarTodos();
         exibirTabela(carteiras);
     }
 
     private static void exibirUma() throws PersistenciaException {
-        Console.titulo("EXIBIR UMA CARTEIRA");
+        titulo("EXIBIR UMA CARTEIRA");
 
         Carteira carteira = buscarCarteira("ID da carteira (0 para cancelar): ");
         if (carteira == null) {
@@ -316,9 +320,9 @@ public class CarteiraMenu {
     }
 
     private static void listarPorInvestidor() throws PersistenciaException {
-        Console.titulo("CARTEIRAS DE UM INVESTIDOR");
+        titulo("CARTEIRAS DE UM INVESTIDOR");
 
-        long id = Console.lerLong("ID do investidor (0 para cancelar): ");
+        long id = lerId("ID do investidor (0 para cancelar): ");
         if (id == 0) {
             return;
         }
@@ -332,9 +336,9 @@ public class CarteiraMenu {
     }
 
     private static void listarPorEmpresa() throws PersistenciaException {
-        Console.titulo("CARTEIRAS DE UMA EMPRESA");
+        titulo("CARTEIRAS DE UMA EMPRESA");
 
-        long id = Console.lerLong("ID da empresa (0 para cancelar): ");
+        long id = lerId("ID da empresa (0 para cancelar): ");
         if (id == 0) {
             return;
         }
@@ -348,7 +352,7 @@ public class CarteiraMenu {
     }
 
     private static void exibirResumo() throws PersistenciaException {
-        Console.titulo("RESUMO DAS CARTEIRAS");
+        titulo("RESUMO DAS CARTEIRAS");
         System.out.println("Total de carteiras: " + carteiraDAO.contarTotalCarteiras());
         System.out.println("Saldo somado: " + formatarValor(carteiraDAO.somarSaldoTotal()));
     }
@@ -357,9 +361,25 @@ public class CarteiraMenu {
     //  Apoio
     // =====================================================================
 
+    /** Cabecalho de secao, no mesmo estilo do InvestidorMenu. */
+    private static void titulo(String texto) {
+        System.out.println("\n--- " + texto + " ---");
+    }
+
+    /** Le um id (o Console so le int, como no InvestidorMenu); 0 e usado para cancelar. */
+    private static long lerId(String prompt) {
+        while (true) {
+            int id = Console.lerInt(prompt);
+            if (id >= 0) {
+                return id;
+            }
+            System.out.println("O ID não pode ser negativo.");
+        }
+    }
+
     /** Pede o id e busca a carteira; 0 cancela. Devolve null se cancelou ou nao achou. */
     private static Carteira buscarCarteira(String prompt) throws PersistenciaException {
-        long id = Console.lerLong(prompt);
+        long id = lerId(prompt);
         if (id == 0) {
             return null;
         }
@@ -384,10 +404,10 @@ public class CarteiraMenu {
 
     /** @return a mensagem de erro, ou null se o saldo for valido */
     private static String validarSaldo(BigDecimal valor) {
-        if (valor.signum() < 0) {
+        if (!Validador.validarValorNaoNegativo(valor)) {
             return "O saldo não pode ser negativo.";
         }
-        if (valor.stripTrailingZeros().scale() > MAXIMO_CASAS_DECIMAIS) {
+        if (!Validador.validarDuasCasasDecimais(valor)) {
             return "O saldo aceita no máximo " + MAXIMO_CASAS_DECIMAIS + " casas decimais.";
         }
         if (valor.toBigInteger().toString().length() > MAXIMO_DIGITOS_INTEIROS) {
