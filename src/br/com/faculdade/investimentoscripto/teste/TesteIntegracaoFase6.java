@@ -1,4 +1,4 @@
-package br.com.faculdade.investimentoscripto.main;
+package br.com.faculdade.investimentoscripto.teste;
 
 import br.com.faculdade.investimentoscripto.conexao.ConnectionFactory;
 import br.com.faculdade.investimentoscripto.dao.AtivoCriptoDAO;

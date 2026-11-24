@@ -58,13 +58,13 @@ VALUES (4);
 -- =====================================================================
 
 INSERT INTO T_SIP_EMPRESA (nm_razao_social, nr_cnpj, id_usuario)
-VALUES ('CryptoTech Investimentos Ltda', '12345678000190', 1);
+VALUES ('CryptoTech Investimentos Ltda', '12345678000195', 1);
 
 INSERT INTO T_SIP_EMPRESA (nm_razao_social, nr_cnpj, id_usuario)
-VALUES ('BlockData Solucoes Financeiras Ltda', '23456789000181', 2);
+VALUES ('BlockData Solucoes Financeiras Ltda', '23456789000195', 2);
 
 INSERT INTO T_SIP_EMPRESA (nm_razao_social, nr_cnpj, id_usuario)
-VALUES ('Digital Assets Brasil S.A.', '34567890000172', 3);
+VALUES ('Digital Assets Brasil S.A.', '34567890000130', 3);
 
 
 -- =====================================================================
