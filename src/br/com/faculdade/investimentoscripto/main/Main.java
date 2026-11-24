@@ -3,6 +3,7 @@ package br.com.faculdade.investimentoscripto.main;
 import br.com.faculdade.investimentoscripto.view.Console;
 import br.com.faculdade.investimentoscripto.view.AtivoCriptoMenu;
 import br.com.faculdade.investimentoscripto.view.CarteiraMenu;
+import br.com.faculdade.investimentoscripto.view.EmpresaMenu;
 import br.com.faculdade.investimentoscripto.view.TransacaoMenu;
 import br.com.faculdade.investimentoscripto.view.InvestidorMenu;
 
@@ -17,10 +18,10 @@ public class Main {
 
             switch (opcao) {
                 case 1 -> InvestidorMenu.executar();
+                case 2 -> EmpresaMenu.executar();
                 case 3 -> CarteiraMenu.executar();
                 case 4 -> AtivoCriptoMenu.executar();
                 case 5 -> TransacaoMenu.executar();
-                case 2 -> System.out.println("\nEste módulo ainda não está disponível.");
                 case 0 -> System.out.println("\nSistema encerrado.");
                 default -> System.out.println("\nOpção inválida.");
             }
